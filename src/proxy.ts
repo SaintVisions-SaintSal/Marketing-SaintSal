@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -36,8 +36,9 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // Protect all /(app)/* routes
-  const isAppRoute = !pathname.startsWith('/login') &&
+  // Protect all app routes (everything except login, auth, api/auth, static files)
+  const isAppRoute =
+    !pathname.startsWith('/login') &&
     !pathname.startsWith('/auth') &&
     !pathname.startsWith('/_next') &&
     !pathname.startsWith('/favicon') &&
